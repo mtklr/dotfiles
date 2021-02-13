@@ -1,0 +1,13 @@
+# unifinished attempt at searchable history
+_comp_hist () {
+	local cur words IFS
+
+	IFS=$'\n'
+	COMPREPLY=()
+	cur=${COMP_WORDS[COMP_CWORD]}
+	words=$(history | sed 's/  *[0-9][0-9]*  *//' | grep -Fs -- "${cur}")
+
+	# '$words' single quoted, or it doesn't work and accepts any arg to complete
+	COMPREPLY=( $(compgen -o default -W'$words' "${cur}") )
+}
+complete -F _comp_hist cmd

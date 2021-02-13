@@ -1,0 +1,15 @@
+# Restrict unlink to symbolic links only.
+# The default unlink command ('unlink file') will delete a regular file.
+unlink () {
+	if [ ! -e "$1" ]; then
+		echo "unlink: $1: No such file"
+		return 1
+	fi
+
+	if [ -h "$1" ]; then
+		command unlink "$1" || return
+	else
+		echo "unlink: $1: Not a symbolic link"
+		return 1
+	fi
+}

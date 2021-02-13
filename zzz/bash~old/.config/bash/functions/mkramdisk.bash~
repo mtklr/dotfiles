@@ -1,0 +1,32 @@
+# make a ram disk of $1 megabytes
+# https://josephg.com/blog/bug-hunting-with-american-fuzzy-lop/
+# mkramdisk size [name]
+
+mkramdisk () {
+	local size name blocks maxsize fs device
+
+	# require numeric arg
+	[ "${1//[0-9]/}" = "" ] || return 1
+
+	# fs='APFS'
+	fs='HFS+'
+	maxsize=500
+	size="$1"
+	name='RAM Disk'
+
+	[ -n "$2" ] && name="$2"
+
+	# 1 block = 512 bytes, 1M = 2048 blocks
+	blocks=$((size * 2048))
+
+	# limit size to $maxsize mb
+	# [ $size -lt $maxsize ] || size=$maxsize
+
+	# return if size > $maxsize
+	[ "$size" -lt "$maxsize" ] || { echo "size > $maxsize"; return 1; }
+
+	device="$(hdiutil attach -nomount ram://$blocks)"
+
+	# quoting "$device" doesn't work
+	diskutil eraseVolume "$fs" "$name" $device
+}

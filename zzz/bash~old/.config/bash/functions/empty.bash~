@@ -1,0 +1,16 @@
+# empty trash from command line
+
+function empty () {
+	[ -f "$HOME/.Trash/*" ] || return 1
+
+	ls "$HOME"/.Trash
+	du -sh "$HOME"/.Trash
+
+	read -r -p 'empty trash (Y confirms, any other key to quit)? '
+
+	case $REPLY in
+		Y ) osascript -e 'tell application "Finder"' -e 'empty trash' \
+			-e 'end tell' ;;
+		? ) return ;;
+	esac
+}

@@ -1,0 +1,6 @@
+# uniquely sort $PATH (or ':' separated variable), keeping the same order;
+# avoids duplicates when $PATH is sourced from multiple files
+uniqpath () {
+	echo -e "${PATH//:/\\n}" | pr -n\ 1 -t | sort -k 2 -u | sort | \
+	cut -d ' ' -f 2 | tr '\n' ':' | sed 's/:$//'
+}

@@ -1,0 +1,12 @@
+# Make Finder alias.
+# mkalias file folder
+# mkalias folder folder
+mkalias () {
+	osascript 2>/dev/null <<EOF
+set a to POSIX file "$1"
+set b to POSIX file "$2"
+tell application "Finder"
+make alias file to a at b
+end tell
+EOF
+}

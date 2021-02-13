@@ -1,0 +1,12 @@
+# diskutil completion
+_comp_diskutil () {
+	local cur prev words
+
+	COMPREPLY=()
+	cur=${COMP_WORDS[COMP_CWORD]}
+	prev=${COMP_WORDS[$((COMP_CWORD - 1))]}
+	words="$(diskutil | sed '/^    /!d;s/  */ /;s/[][]//g' | cut -d ' ' -f 2)"
+
+	COMPREPLY=( $(compgen -o default -W'$words' "$cur") )
+}
+complete -o default -F _comp_diskutil diskutil

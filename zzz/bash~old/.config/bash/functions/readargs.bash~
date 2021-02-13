@@ -1,0 +1,59 @@
+# handle various forms of input
+#
+# readargs $1 ...
+# readargs file ...
+# readargs <file
+# readargs <<EOF
+#   (input until EOF on line)
+# readargs <<<word
+# echo arg | readargs
+# echo arg | readargs -
+
+function readargs () {
+	local a line
+
+	# treat input like `cat`
+	if [ -z "${1:-}" ]; then
+		while IFS='' read -r line; do
+			echo "$line"
+		done
+	else
+		for a; do
+			# skip directories
+			if [ -d "$a" ]; then
+				echo "$me: $a: Is a directory"
+				continue
+			fi
+
+			# skip missing files
+			if [ ! -e "$a" ]; then
+				echo "$me: $a: No such file or directory"
+				continue
+			fi
+
+			# a is "-", treat as stdin
+			if [ "$a" = "-" ]; then
+				while IFS='' read -r line; do
+					echo "$line"
+				done
+			# $a is a file or <(list)
+			else
+				while IFS='' read -r line; do
+					echo "$line"
+				done <"$a"
+			fi
+			# uncomment and comment out above 'else'
+			# to echo arg as-is - also comment out
+			# dir/file check above to prevent missing file error
+			# $a is a file or <(list)
+			# elif [[ -f "$a" || "$a" =~ /dev/fd/ ]]; then
+			# 	while IFS='' read -r line; do
+			# 		echo "$line"
+			# 	done <"$a"
+			# uncomment to echo $a as-is
+			# else
+			# 	echo $a
+			# fi
+		done
+	fi
+}

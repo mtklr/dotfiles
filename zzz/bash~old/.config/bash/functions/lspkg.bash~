@@ -1,0 +1,14 @@
+# lspkg - list debian/ubuntu package contents, w/o installing package
+# https://superuser.com/a/904419
+function lspkg () {
+	local lsb deb ubu
+	lsb='lsb_release'
+	deb='Debian https://packages.debian.org'
+	ubu='Ubuntu http://packages.ubuntu.com'
+	wget -q -O - "$($lsb -si | \
+	sed -e "s $ubu " -e "s $deb ")/$($lsb -sc)/all/${1}/filelist" | \
+	sed -e '/<pre>/,/<\/pre>/!d;s/<[^>]\+>//g;/^$/d'
+}
+
+# use _dpkg "dpkg --list" completion
+complete -W'$(apt-cache pkgnames)' lspkg

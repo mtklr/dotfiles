@@ -1,0 +1,19 @@
+# Show unbound 'bind' keys.
+# Needs to be a function so bind is used in current shell.
+# In a script, bind returns nothing unless sourced.
+unbound () {
+	# Meta/escape keys.
+	jot -w '"\e%c"' 95 '\ ' | \
+	sed 's/\\e\\/\\e\\\\/;s/\\e"/\\e\\"/' | \
+	grep -Fv -f <(bind -ps | grep -o '"\\e[[:print:]]"')
+
+	#bind -ps | grep -E -o '"(\\e|\\C-x*)[[:print:]]"' | sort
+
+	# Control-x keys.
+	jot -w '"\C-x%c"' 95 '\ ' | \
+	sed 's/-x\\/-x\\\\/;s/-x"/-x\\"/' | \
+	grep -Fv -f <(bind -ps | grep -o '"\\C-x[[:print:]]"')
+
+	# Non-vi functions.
+	bind -p | grep -F 'not bound' | grep -Fv 'vi-'
+}

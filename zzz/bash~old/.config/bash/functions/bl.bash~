@@ -1,0 +1,5 @@
+# find broken symlinks in $1 (or cwd), -maxdepth $2 (or 1)
+
+bl () {
+	find -L "${1:-.}" -maxdepth "${2:-1}" -type l
+}

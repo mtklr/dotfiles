@@ -1,0 +1,3 @@
+alias howsay='p=~/src/howard; fortune "$p" | cowsay -f "$p"/howard.cow'
+alias howsayv='p=~/src/howard; h="$(fortune "$p")"; cowsay -f "$p"/howard.cow "$h" && say -v Daniel "$h"'
+alias wowsay='p=~/src/howard; fortune "$p" | figlet -C utf8 | cowsay -np -f "$p"/howard.cow | lolcat'

@@ -1,0 +1,17 @@
+# Job completion on job numbers (avoid "ambiguous job spec").
+_comp_jobs () {
+	local cur words
+
+	COMPREPLY=()
+	cur=${COMP_WORDS[COMP_CWORD]}
+	words=$(jobs | sed 's/^\[\([0-9]\{1,\}\)\].*/\1/')
+
+	if [ -z "$cur" ] && (("$(jobs | wc -l)" > 1 )); then
+		echo
+		jobs
+		echo -n '----'
+	fi
+
+	COMPREPLY=( $(compgen -W'$words' "$cur") )
+}
+complete -F _comp_jobs bg disown fg jobs "$([ "$(type -t j)" = "alias" ] && echo "j")"

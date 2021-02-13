@@ -1,0 +1,20 @@
+# change directory (cd) to a Finder alias
+cda () {
+	local p
+
+	[ -f "$1" ] || return 1
+
+	p=$(osascript 2>/dev/null <<EOF
+tell application "Finder"
+set a to (POSIX file "$1" as alias)
+if kind of a is "alias" then
+get POSIX path of (original item of a as text)
+end if
+end tell
+EOF
+)
+
+	if [ -n "$p" ]; then
+		cd "$p" || return 1
+	fi
+}

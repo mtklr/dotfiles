@@ -1,0 +1,26 @@
+# https://github.com/crawl/crawl/blob/master/crawl-ref/docs/options_guide.txt
+
+# 1- Starting Screen.
+default_manual_training = true
+
+# 3-f Travel and Exploration.
+travel_delay = -1
+rest_delay = -1
+explore_auto_rest = true
+
+# 3-g Command Enhancements.
+auto_butcher = true
+confirm_butcher = never
+easy_eat_chunks = true
+
+# 3-h Message and Display Improvements.
+show_more = false
+show_travel_trail = true
+
+# 3-i Colours (messages and menus)
+message_colour += blue:reflects
+
+# 3-n Tiles Options.
+#tile_window_width = 0
+#tile_window_height = 0
+tile_font_ft_light = true

@@ -1,0 +1,43 @@
+alias c='cd -'
+alias u='cd ..'
+
+alias d='dirs -v'
+alias pu='pushd'
+alias po='popd'
+alias r='pushd +1'
+alias x='pushd'
+
+alias ds="date -j '+%Y-%m-%d-%H%M%S'"
+
+alias f='find . -iname'
+
+alias fl='declare -f'
+
+alias ifs='set | grep -w "^IFS"'
+
+alias j='jobs'
+
+alias le='less'
+
+alias ls='ls -F'
+alias l='ls'
+alias la='ls -a'
+alias ll='ls -l'
+alias lz='ls -lSh'
+
+# `reset` command works, but doesn't match initial terminal state
+alias sane='stty sane; stty iutf8; tput reset'
+
+alias tart='tar -tvf'
+alias tarx='tar -xvf'
+
+alias uzl='unzip -l'
+
+alias whatip='dig +short myip.opendns.com @resolver1.opendns.com'
+
+alias wl='printf "\e[8;48;132t"' # large
+alias wn='printf "\e[8;24;80t"'  # normal
+alias wt='printf "\e[8;48;80t"'  # tall
+# alias ww='printf "\e[8;24;132t"' # wide
+# alias wx='printf "\e[9;1t"'      # maximize
+# alias wr='printf "\e[9;0t"'      # restore to previous size

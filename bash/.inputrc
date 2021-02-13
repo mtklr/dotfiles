@@ -1,0 +1,17 @@
+set mark-symlinked-directories on
+set show-all-if-ambiguous on
+set show-all-if-unmodified on
+set visible-stats on
+
+# shift left, right, up, down
+# (up/down not in Terminal.app 'Keyboard' by default)
+"\e[1;2D": vi-prev-word
+"\e[1;2C": vi-next-word
+# "\e[1;2A": ""
+# "\e[1;2B": ""
+
+# shift page up, page down
+"\e[5~": history-search-backward
+"\e[6~": history-search-forward
+
+"\ew": unix-filename-rubout

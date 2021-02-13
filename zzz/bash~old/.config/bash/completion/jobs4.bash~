@@ -1,0 +1,27 @@
+# unfinished 4th attempt for some reason at complete job completion
+
+_comp_jobs4 () {
+	local jobcmds jobnums jobstat unique
+
+	# remove job status, [], {}, ; from job command lines
+	jobcmds=( $(jobs | sed 's/  */	/g' | cut -f1,3- | sed 's/.*]//;s/(wd:.*//;s/[[{}();]//g;s/]/	/') )
+
+	# job numbers only
+	jobnums=( $(jobs | cut -d' ' -f1 | sed 's/[^[:digit:]]//g') )
+
+	# this could just be '+' and '-', either works even if they're not listed in `jobs`
+	# or fold into jobcmds above with sed
+	# jobstat=( $(jobs | cut -d' ' -f1 | sed 's/.*\]//') )
+
+	# bash dedupe
+	# https://stackoverflow.com/a/1874148
+	for a in "${jobcmds[@]}"; do
+		if [[ ! $unique =~ $a ]]; then
+			unique="$unique $a"
+		fi
+		# echo "a: $a"
+	done
+
+	# remove initial space
+	echo "${jobnums[@]} ${unique/ }"
+}

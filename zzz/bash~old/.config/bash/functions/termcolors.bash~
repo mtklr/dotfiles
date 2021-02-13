@@ -1,0 +1,41 @@
+# terminal color list
+# http://bbs.archlinux.org/viewtopic.php?id=89700
+
+termcolors () {
+	local n i j k
+
+	for n in {0..15}; do
+	    printf "\e[0;38;5;%dm%4d" "$n" "$n"
+	done
+	echo
+
+	for i in {0..5}; do
+		for j in {0..5}; do
+			for k in {0..5}; do
+				n=$((16 + i + 6 * j + 36 * k ))
+				printf "\e[0;38;5;%dm%4d" "$n" "$n"
+			done
+
+			printf ' '
+
+			for k in {0..5}; do
+				n=$((16 + 36 * i + j + 6 * k))
+				printf "\e[0;38;5;%dm%4d" "$n" "$n"
+			done
+
+			printf ' '
+
+			for k in {0..5}; do
+				n=$((16 + 6 * i + 36 * j + k))
+				printf "\e[0;38;5;%dm%4d" "$n" "$n"
+			done
+			echo
+		done
+		echo
+	done
+
+	for n in {232..255}; do
+		printf "\e[0;38;5;%dm%4d" "$n" "$n"
+	done
+	echo
+}

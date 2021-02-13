@@ -1,0 +1,16 @@
+# Search for missing manpages.
+# https://unix.stackexchange.com/q/337619
+
+noman () {
+	local d
+
+	IFS=' ' read -r -a d <<< "${PATH//:/ }"
+
+	for f in "${d[@]}"; do
+		for ff in "$f"/*; do
+			if ! mp=$(man -w -S 1:8:7:6 "${ff##*/}" >/dev/null 2>&1); then
+				echo "$mp" | grep -Fv "man 7 undocumented"
+			fi
+		done
+	done
+}

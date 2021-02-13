@@ -1,0 +1,83 @@
+# unfinished attempt at somewhat automated completion based on command usage/help output
+
+# Reads options from command usage/help to generate completion words.
+# sed '[][|]),' doesn't handle [-a|b|c|d] (which i haven't seen yet) at the moment.
+# '|' in sed '[][|]),' handles [-a|-e|-g] in `stty'
+# '\/' in sed    "     handles '-h/-t/-z' in `zipinfo'
+# ')' in sed     "     handles '( -c)' in `mam' usage (user script)
+# ',' in sed     "     handles '-W,' in `aclocal'
+# '.' in sed     "     handles 'by --.' in `less'
+# '"' in sed     "     handles 'ls -l"' in `zipinfo'
+# '_' in sed     "     handles '_<flag>' in `less'
+
+# _usage_builtin_comp () {
+# }
+
+# builtins that have options and work (piped thru head -n1)
+# alias
+# bind
+# cd, command, compgen
+# declare
+# echo, exec, export
+# fc
+# hash, help, history
+# jobs
+# printf, pwd
+# read, readonly
+# shopt, suspend
+# time, trap, type, typeset (obsolete)
+# ulimit, umask, unset
+
+# builtins that need "help"
+# dirs - needs '+' along with '-'
+# kill - '-sigspec' turns in to '-s, -i, -g' etc. only options are: -s, -n -l (plus -PID or -JOB)
+# popd - needs '+', says '-N' but 'N' stands for a number, not an option '-N'.
+# pushd - needs '+', remove tabs after options
+# set - lists options as '[--abefhkmnptuvxBCHP]', function doesn't break this into seperate options because of '--'
+# test - doesn't list options in one line (can't use 'head -n1'), lists '-.' as option, has some two letter options...
+
+_comp_usage () {
+	local cur words helpopt
+
+	COMPREPLY=()
+	cur=${COMP_WORDS[COMP_CWORD]}
+	helpopt='--help'
+
+	# case command in 'zipnote', '(others that don't take --help)' ... ,
+	# - help='-h' or whatever gets the options printed
+	#
+
+	# case command in 'less' ...  pipe through cat
+
+	words=$(eval "${COMP_WORDS[0]}" "$helpopt" 2>&1 | \
+		sed '/command not found/d;/illegal option/d;/-/!d;s/[][}{|()<>:,.\/"_	]/ /g' | tr ' ' '\n' | \
+		sed '/^-*$/d;/-$/d;/^-/!d;/^--*$/d;/^-[^-]/{s/[^-]/ -&/g;};s/^- //;s/=.*/=/' | \
+		tr ' ' '\n' | sort -u)
+
+	case "$cur" in
+		-* ) COMPREPLY=( $(compgen -W'$words' "$cur" ) );;
+	esac
+
+	return 0
+}
+complete -o default -F _comp_usage cut grep ls sed tr # add commands here
+
+# commands that work, os x 10.11.5
+# ac
+# bash
+# cut
+# file
+# ls
+# sed
+# tr
+# wall, wc, wdutil, which, who, whois
+# xar, xattr, xcode-select, xcrun, xed, xml2-config, xmlcatalog, xmllint, xscertadmin, xslt-config, xsltproc
+# yacc, ypcat, ypmatch, yppoll, ypset, ypwhich
+# zcat, zdump, zegrep, zfgrep, zic, zipcloack, zipdetails, zipdetails5.16, zipdetails5.18, zforce, znew, zprint, zsh
+
+# homebrew commands that work
+# aclocal
+# x264, xz
+
+# X11 commands that work (most use -name style options)
+# xcompmgr, xcursorgen, xrandr, xscope

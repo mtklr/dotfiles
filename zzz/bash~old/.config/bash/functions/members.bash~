@@ -1,0 +1,23 @@
+# Show members of a given group.
+# usage: members group
+# dsmemberutil(1) does not set exit status.
+# dseditgroup(8) sets exit status, but is slower.
+# https://superuser.com/q/279891
+members () {
+	local u
+
+	if dscl . -list /Groups | grep -Fqx -e "$1"; then
+		dscl . -list /Users | \
+		while read -r u; do
+			printf '%s ' "$u"
+			# dseditgroup -o checkmember -m $u -n . "$1"
+			dsmemberutil checkmembership -U "$u" -G "$1"
+		done | grep -F "is a member" | cut -d " " -f 1
+	else
+		echo "$1: No such group"
+		return 1
+	fi
+}
+
+# completion
+complete -A group members

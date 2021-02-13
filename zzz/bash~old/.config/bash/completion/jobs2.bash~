@@ -1,0 +1,69 @@
+# is command a group command?
+# yes, save seperately from regular commands
+# filter out { }
+# complete on actual command
+# add prefix \{ upon completion
+
+# unfinished better^H^H^H^H^H^H "more thorough" job completion?
+# see man bash: "auto_resume" and "JOB CONTROL"
+_comp_jobs () {
+	local cur words
+	local line job cmd cmdline
+
+	COMPREPLY=()
+	cur=${COMP_WORDS[COMP_CWORD]}
+
+	while read -r line; do
+		job="${line%% *}"
+		job="${job/+/ + %}"
+		job="${job/-/ -}"
+		job="${job//[\[\]]}"
+
+		# job command with args
+		cmd="${line##*    }"
+
+		# save commands and args for substring match
+		cmdline="$cmdline $cmd"
+
+		# job command only
+		cmd="${cmd/ *}"
+
+		words="$words $job $cmd"
+	done < <(jobs)
+
+	# append '?' to completion list for possible substring match
+	words="$words ?"
+
+	# remove '|' from substring completion
+	cmdline="${cmdline//|}"
+
+	# TODO arrange better to avoid duplication
+	if [ "${cur:0:1}" = "%" ]; then
+		if [ "${cur:1:1}" = "?" ]; then
+			# filter out duplicates for substring match
+			cmdline="$(sort <<<"${cmdline// /$'\n'}" | uniq -u)"
+			cmdline="${cmdline//$'\n'/ }"
+			words="${cmdline// / %?}"
+		else
+			words="${words// / %}"
+		fi
+	elif [ "${cur:0:1}" = "?" ]; then
+		# filter out duplicates for substring match
+		cmdline="$(sort <<<"${cmdline// /$'\n'}" | uniq -u)"
+		cmdline="${cmdline//$'\n'/ }"
+		words="${cmdline// / ?}"
+	fi
+
+	# remove initial space for further formatting, if needed
+	words="${words/ }"
+
+	COMPREPLY=( $(compgen -W'$words' "$cur") )
+}
+
+# simple:
+# complete -j bg disown fg jobs $([ "$(type -t j)" = "alias" ] && echo "j")
+
+# not simple: (use _comp_jobs(), -o nosort keeps job number with its name)
+# NOTE: macos bash (3.x) doesn't have "-o nosort"
+# complete -o nosort -F _comp_jobs bg disown fg jobs
+complete -F _comp_jobs "$([ "$(type -t j)" = "alias" ] && echo "j")"

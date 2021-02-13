@@ -1,0 +1,24 @@
+# list directories recursively, in $1 ...
+ldr () {
+	local current="${*-.}"
+	local running=y
+	_ldr_rec
+}
+
+_ldr_rec () {
+	local d
+	while [ $running ]; do
+		unset running
+
+		for d in "$current"/*; do
+			if [ ! -d "$d" ]; then
+				continue
+			fi
+
+			echo "${d// /\\ }"
+			current=$d
+			running=y
+			_ldr_rec
+		done
+	done
+}

@@ -1,0 +1,82 @@
+alias ..='cd ..'
+alias .2='cd ../..'
+alias .3='cd ../../..'
+alias .4='cd ../../../..'
+alias .5='cd ../../../../..'
+alias cd\-='cd -'
+alias ,='cd -'
+
+# command frequency (most used commands)
+alias cfreq='cut -f1 -d" " ~/.bash_history | sort | uniq -c | sort -nr | head -n 30'
+
+alias d='dirs'
+alias dn='pushd +1'
+alias dp='pushd -1'
+
+alias ds="date -j '+%Y-%m-%d-%H%M%S'"
+
+alias f='find . -iname'
+
+# find files with +x permission
+alias fx='find . -type f -perm +ugo+x'
+
+alias fl='declare -f'
+
+# head/tail to screen height when it's one file or piped from another command
+alias hn='head -n$(( $(tput lines) - 1))'
+alias tn='tail -n$(( $(tput lines) - 1))'
+
+alias ifs='set | grep -w "^IFS"'
+alias j='jobs -l'
+alias le='less'
+
+alias l='ls -F'
+alias l1='ls -F1'
+alias la='ls -AF'
+alias lh='ls -lhF'
+alias ll='ls -lF'
+alias lz='ls -AlhFS'
+
+alias m='make'
+alias mc='make clean'
+alias mn='make -n'
+alias mnc='make -n clean'
+alias mni='make -n install'
+alias mnu='make -n uninstall'
+
+alias p='pwd'
+
+# alias po='popd'
+# alias pon='popd -n'
+# alias pu='pushd'
+# alias pun='pushd -n'
+
+# from `help fc`:
+# With the `fc -s [pat=rep ...] [command]' format, the command is re-executed
+# after the substitution OLD=NEW is performed.
+# A useful alias to use with this is r='fc -s', so that typing `r cc' runs the
+# last command beginning with `cc' and typing `r' re-executes the last command.
+alias r='fc -s'
+
+# reset garbled terminal to match initial state (new terminal)
+# `reset` works but results in settings that don't match initial state
+alias sane='stty sane; stty iutf8; tput reset'
+
+alias tart='tar -tvf'
+alias tarx='tar -xvf'
+
+alias uzl='unzip -l'
+
+alias wh='which'
+alias wi='whatis'
+
+# https://unix.stackexchange.com/q/22615
+alias whatip='dig +short myip.opendns.com @resolver1.opendns.com'
+
+# window sizes
+alias wl='printf "\e[8;48;132t"' # large
+alias wn='printf "\e[8;24;80t"'  # normal
+alias wt='printf "\e[8;48;80t"'  # tall
+alias ww='printf "\e[8;24;132t"' # wide
+alias wx='printf "\e[9;1t"'      # maximize
+alias wr='printf "\e[9;0t"'      # restore to previous size

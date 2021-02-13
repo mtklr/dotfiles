@@ -1,0 +1,17 @@
+/* Personal calendar file */
+
+#ifndef CALENDAR_USER
+#define CALENDAR_USER
+
+#include <calendar.birthday>
+#include <calendar.computer>
+#include <calendar.freebsd>
+#include <calendar.history>
+#include <calendar.holiday>
+#include <calendar.lotr>
+#include <calendar.music>
+#include <calendar.usholiday>
+#include <calendar.world>
+
+05/04	International Respect for Chickens Day - upc-online.org/respect/
+#endif /* CALENDAR_USER */

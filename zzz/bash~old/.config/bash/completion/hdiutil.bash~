@@ -1,0 +1,12 @@
+# hdiutil completion
+_comp_hdiutil () {
+	local cur prev words
+
+	COMPREPLY=()
+	cur=${COMP_WORDS[COMP_CWORD]}
+	prev=${COMP_WORDS[$((COMP_CWORD - 1))]}
+	words="$(hdiutil 2>&1 | grep -Ev '^(hdiutil|Usage|<)')"
+
+	COMPREPLY=( $(compgen -o default -W'$words' "$cur") )
+}
+complete -o default -F _comp_hdiutil hdiutil

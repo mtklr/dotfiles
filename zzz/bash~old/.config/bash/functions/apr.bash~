@@ -1,0 +1,7 @@
+# apropos(1), purposely reformatted
+# usage: apr keyword ...
+apr () {
+	# '\' part of sed expression to match newline
+	apropos "$@" | sed -e 's/, -/,/;s/), /),\
+  /g;s/ - /	- /' | column -s$'\t' -t | less -Se
+}

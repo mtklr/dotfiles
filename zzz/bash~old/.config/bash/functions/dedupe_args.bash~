@@ -1,0 +1,23 @@
+# bash dedupe
+# https://stackoverflow.com/a/1874148
+
+dedupe_args () {
+	local a lines l unique
+
+	# no commandline args, read stdin
+	if [ -z "$1" ]; then
+		# while read -r l; do
+		# 	lines=( ${lines[@]} $l )
+		# done
+		read -d '' -r -a lines
+	fi
+
+	for a in "${@:-${lines[@]}}"; do
+		if [[ ! $unique =~ $a ]]; then
+			unique="$unique $a"
+		fi
+	done
+
+	# remove initial space
+	echo "${unique/ }"
+}

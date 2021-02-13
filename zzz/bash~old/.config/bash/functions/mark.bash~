@@ -1,0 +1,287 @@
+# Bookmark directory navigation.
+# Based on: http://jeroenjanssens.com/2013/08/16/quickly-navigate-your-filesystem-from-the-command-line.html
+
+# MARKPATH is where links are saved, and must be defined.
+# Set it in ~/.bash_profile or ~/.bashrc: MARKPATH=~/.mark
+# NOTE: Not sure how it handles unicode/multibyte characters.
+
+# Add mark.
+# usage: mark_add [dir] [name]
+# options:
+#   [dir] default is the current directory.
+#   [name] default is the basename of [dir], or basename of [name] if [name] is
+#   a directory.
+mark_add () {
+	if [ -z "$MARKPATH" ]; then
+		echo "mark: MARKPATH not set" >&2
+		return 1
+	fi
+
+	local d m
+
+	d="${1-.}"
+
+	if [ ! -e "$d" ]; then
+		echo "mark: $d: No such file or directory" >&2
+		return 1
+	fi
+
+	if [ ! -d "$d" ]; then
+		echo "mark: $d: Not a directory" >&2
+		return 1
+	fi
+
+	# Make dir an absolute path (handles '.', '..', '~' in $1).
+        d=$(builtin cd "$d" >/dev/null 2>&1 && builtin pwd -P)
+
+	# Make mark the basename of d when no $2 arg is given.
+	m="${d##*/}"
+
+	# Use _'s for spaces in mark.
+	m="${m// /_}"
+
+	if [ -n "$2" ]; then
+		m="$2"
+
+		# If $2 is a dir, make it an absolute path.
+		[ -d "$2" ] && m=$(builtin cd "$d" >/dev/null 2>&1 && builtin pwd -P)
+
+		# Make mark the basename of m.
+		m="${m##*/}"
+	fi
+
+	if [ -h "$MARKPATH/$m" ]; then
+		echo "mark: $m: File exists" >&2
+		return 1
+	fi
+
+	mkdir -p "$MARKPATH" && ln -s "$d" "$MARKPATH/$m"
+}
+
+# Change directory (cd) to unique match of [mark], or list matches.
+# usage: mark_cd [-d | -m | -n] [mark]
+# options:
+#   -d: print directory, don't cd to it
+#   -m: print mark, don't cd to it
+#   -n: print mark and directory, don't cd to it
+
+# NOTE: $MARKOLDPWD is not updated if you 'cd' from a mark dir, then 'd -'.
+# It will only go back to the last $MARKOLDPWD, not just any dir you were in
+# prior to the 'cd'. You could use $PROMPT_COMMAND to check if $PWD is a mark
+# and update $MARKOLDPWD if you want to, I suppose.
+mark_cd () {
+	if [ -z "$MARKPATH" ]; then
+		echo "mark: MARKPATH not set" >&2
+		return 1
+	fi
+
+	local m
+
+	# m=$(stat -q -f '%N%t%Y' "$MARKPATH"/* | sed "s:$MARKPATH/::")
+	m=$(stat -q -f '%N%t%Y' "$MARKPATH"/*)
+	m="${m//$MARKPATH\/}"
+
+	case "$1" in
+		-d )
+			shift
+			if [ "$1" = "-" ]; then
+				[ -n "$MARKOLDPWD" ] || return 1
+                                echo "$MARKOLDPWD"
+			else
+			# NOTE: the join command isolates a regexp pattern to the first
+			# field only, eg: '^a' matches marks starting w/ 'a',
+			# '[0-9]$' matches marks ending in a number,
+			# '^be$' matches exactly 'be', etc.
+			#
+			# m=$(join -t$'\t' <(cut -f1 <<<"$m" | grep -e "$1") - <<<"$m")
+			#
+			# TODO: Make this a more generic function that takes field
+			# number, separator, grep arg, input text to search.
+
+			# Simpler, match only from beginning of the mark (field 1).
+				m=$(grep -e "^$1[^	]*	" <<<"$m")
+				[ -n "$m" ] || return 1
+				cut -f2 <<<"$m"
+			fi
+			;;
+		-m )
+			shift
+			if [ "$1" = "-" ]; then
+				if [ -n "$MARKOLDPWD" ]; then
+					grep -e " $MARKOLDPWD$" <(mark_cd) | cut -d' ' -f1
+				else
+					return 1
+				fi
+			else
+				m=$(grep -e "^$1[^	]*	" <<<"$m")
+				[ -n "$m" ] || return 1
+				cut -f1 <<<"$m"
+			fi
+			;;
+		-n )
+			shift
+			if [ "$1" = "-" ]; then
+				if [ -n "$MARKOLDPWD" ]; then
+					grep -e " $MARKOLDPWD$" <(mark_cd)
+				else
+					return 1
+				fi
+			else
+				m=$(grep -e "^$1[^	]*	" <<<"$m")
+				[ -n "$m" ] || return 1
+				column -s$'\t' -t <<<"$m"
+			fi
+			;;
+		* )
+			if [ "$1" = "-" ]; then
+				[ -n "$MARKOLDPWD" ] || return 1
+				echo "$MARKOLDPWD"
+				builtin cd "$MARKOLDPWD" || return
+				# Update MARKOLDPWD only if it is a marked directory.
+				if grep -Fqx -e "$OLDPWD" <(mark_cd -d); then
+					MARKOLDPWD="$OLDPWD"
+				fi
+			elif [ "$(mark_cd -d "$1" | wc -l)" -eq 1 ]; then
+				# -P: use physical directory structure.
+				# NOTE: testing w/o -P because it allows MARKOLDPWD to work.
+				builtin cd "$(mark_cd -d "$1")" || return 1
+				# Update MARKOLDPWD only if it is a marked directory.
+				if grep -Fqx -e "$OLDPWD" <(mark_cd -d); then
+					MARKOLDPWD="$OLDPWD"
+				fi
+			else
+				mark_cd -n "$1"
+				return 1
+			fi
+			;;
+	esac
+}
+
+# List (ls) contents of mark target directory.
+# usage: mark_ls [ls opt ...] mark
+# options:
+#   Any ls command option, e.g.: mark_ls -alh -t mark
+mark_ls () {
+	if [ -z "$MARKPATH" ]; then
+		echo "mark: MARKPATH not set" >&2
+		return 1
+	fi
+
+	local lsopt
+
+	while [ "${1:0:1}" = "-" ]; do
+		lsopt="${lsopt}${1}"
+		shift
+	done
+
+	[ -n "$lsopt" ] && lsopt="${lsopt//-}"
+
+	# for m; do # multiple args like mark_rm below
+	if [ "$(mark_cd -d "$1" | wc -l)" -eq 1 ]; then
+		command ls -L "-${lsopt:--}" "$(mark_cd -d "$1")"
+	else
+		mark_cd -n "$1"
+		return 2
+	fi
+}
+
+# Rename (mv) mark. No partial matching like mark_cd, or multiple arguments.
+# usage: mark_mv [-i] name target
+# options:
+#   -i: prompt for confirmation, like mv -i
+mark_mv () {
+	if [ -z "$MARKPATH" ]; then
+		echo "mark: MARKPATH not set" >&2
+		return 1
+	fi
+
+	local prompt
+
+	if [ "$1" = "-i" ]; then
+		prompt='-i'
+		shift
+	fi
+
+	if [ "$#" -lt 2 ]; then
+		mark_cd -n "$1"
+		return 64 # EX_USAGE (see man 3 sysexits)
+	fi
+
+	if [ "$(mark_cd -d "$1" | wc -l)" -eq 1 ]; then
+		mv $prompt "$MARKPATH/$(mark_cd -m "$1")" "$MARKPATH/$2"
+	else
+		mark_cd -n "$1"
+		return 2
+	fi
+}
+
+# Remove (rm) mark. No partial matching like mark_cd.
+# usage: mark_rm [-i] name ...
+# options:
+#   -i: prompt for confirmation, like rm -i
+mark_rm () {
+	if [ -z "$MARKPATH" ]; then
+		echo "mark: MARKPATH not set" >&2
+		return 1
+	fi
+
+	local error m prompt
+
+	if [ "$1" = "-i" ]; then
+		prompt='-i'
+		shift
+	fi
+
+	if [ "$#" -lt 1 ]; then
+		mark_cd -n
+		return 1
+	fi
+
+	for m; do
+		# Errors handled similarly to rm.
+		error=0
+
+		# -h (or -L), not -e.
+		if [ ! -h "$MARKPATH/$m" ]; then
+			echo "mark: $m: No such file or directory" >&2
+			error=1
+			continue
+		fi
+
+		rm $prompt -- "$MARKPATH/$m"
+	done
+
+	[ "$error" -eq 1 ] && return 1
+}
+
+# aliases
+# uncomment _mark_comp completion line below for aliases
+
+# alias ma='mark_add'
+# alias mcd='mark_cd'
+# alias mls='mark_ls'
+# alias ml='mark_ls'
+# alias mmv='mark_mv'
+# alias mrm='mark_rm'
+
+# or dir add, dir, dir ls, dir mv, dir rm
+alias da='mark_add'
+alias d='mark_cd'
+alias d-='mark_cd -'
+alias dls='mark_ls'
+alias dl='mark_ls'
+alias dmv='mark_mv'
+alias drm='mark_rm'
+
+# _comp_mark: completion for mark.bash (symbolic links in $MARKPATH)
+_comp_mark () {
+	local cur words
+	cur=${COMP_WORDS[COMP_CWORD]}
+	words=$(command ls -H "$MARKPATH")
+	COMPREPLY=( $(compgen -W"$words" "$cur") )
+}
+# complete -F _comp_mark mark_cd mark_ls mark_mv mark_rm mcd mls ml mmv mrm
+complete -F _comp_mark mark_cd mark_ls mark_mv mark_rm d dl dls dmv drm
+
+# expand mark to its path (add to ~/.inputrc)
+# "\C-xm": "\eb\ed$(mark_cd -d \C-y)\e\C-e"

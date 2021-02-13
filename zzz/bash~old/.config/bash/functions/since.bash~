@@ -1,0 +1,5 @@
+# List files created or modified since login.
+# usage: since [dir] [maxdepth]
+since () {
+	find "${1:-.}" -maxdepth "${2:-99}" -ctime -${SECONDS}s -o -mtime -${SECONDS}s
+}

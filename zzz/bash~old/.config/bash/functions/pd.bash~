@@ -1,0 +1,35 @@
+# only pushd if directory isn't in stack already
+
+function pd () {
+	local arg realpath inlist d i
+
+	inlist=0
+
+	if [ -z "$1" ]; then
+		# like cd with no arg: cd home
+		arg="$HOME"
+	else
+		arg="$1"
+	fi
+
+	# get full path for arg
+	builtin pushd "$arg" >/dev/null || return
+	realpath="$(builtin pwd -P)"
+	builtin popd >/dev/null || return
+
+	for d in $(builtin dirs -l -p); do
+		# skip first entry (current dir), so it gets added to stack
+		((i++))
+
+		if [[ $i -gt 1 &&  "$realpath" = "$d" ]]; then
+			inlist=1
+		fi
+	done
+
+	if [ "$inlist" -eq 0 ]; then
+		builtin pushd "$realpath" || return
+	else
+		builtin dirs
+	fi
+
+}

@@ -1,0 +1,39 @@
+# status line at top/bottom of terminal window
+# sets scroll region to keep the status line on screen while displaying output
+# usage: status_top "message ..."
+#        status_bottom "message ..."
+#        commands ...
+# done:
+#        status_done
+#        clear
+#        echo 'done'
+
+status_top () {
+	local columns msg
+
+	[ -n "$1" ] || return 1
+	msg="$1"
+
+	columns="$(tput cols)"
+
+	# clear
+	printf '\e7\e[H\e[7m%*c\r%b\e[0m\e[2;r\n\e8' "$columns" " " "$msg"
+}
+
+status_bottom () {
+	local columns lines msg
+
+	[ -n "$1" ] || return 1
+	msg="$1"
+
+	columns="$(tput cols)"
+	lines="$(tput lines)"
+
+	# clear
+	printf '\e7\e[H\e[%iE\e[7m%*c\r%b\e[0m\e[1;%ir\e8' \
+		"$lines" "$columns" " " "$msg" "$((lines - 1))"
+}
+
+status_done () {
+	echo -en '\033[r'
+}

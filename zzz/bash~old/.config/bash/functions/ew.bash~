@@ -1,0 +1,5 @@
+# look for files in $1 with extra whitespace
+
+ew () {
+	grep -r -I -- '[[:space:]]\+$' "${1:-.}"
+}

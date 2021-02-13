@@ -1,0 +1,16 @@
+# Basic go command completion.
+_comp_go () {
+	local cur prev words
+
+	COMPREPLY=()
+	cur=${COMP_WORDS[COMP_CWORD]}
+	prev=${COMP_WORDS[$((COMP_CWORD - 1))]}
+	words="$(go --help 2>&1 | sed '/are:/,/Use/!d;/	/!d;s/	//g;s/  .*//')"
+
+	if [ "$prev" != "help" ]; then
+		words="help $words"
+	fi
+
+	COMPREPLY=( $(compgen -o default -W'$words' "$cur") )
+}
+complete -o default -F _comp_go go

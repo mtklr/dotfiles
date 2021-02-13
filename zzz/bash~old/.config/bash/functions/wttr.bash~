@@ -1,0 +1,18 @@
+# wttr - weather from http://wttr.in
+# see http://wttr.in/:help for options
+# usage: wttr [location]
+
+wttr () {
+    local loc cur
+
+    # change $loc to your default location
+    loc=Boston
+
+    if [ "$1" = "-c" ]; then
+	    cur=0
+	    shift
+    fi
+
+    # wget -q -O - "Accept-Language: ${LANG%_*}" wttr.in/"${1:-$loc}?${cur}qn"
+    curl -s "Accept-Language: ${LANG%_*}" wttr.in/"${1:-$loc}?${cur}qn"
+}

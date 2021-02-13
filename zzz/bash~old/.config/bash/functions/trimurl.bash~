@@ -1,0 +1,26 @@
+# https://blog.jmdawson.co.uk/a-url-shorter-at-the-bash-zsh-prompt/
+# shorten url
+
+trimurl() {
+	local copy copycmd trim url
+
+	copy=0
+	copycmd='pbcopy' #'xclip -selection clipboard'
+	trim='https://trimlink.site/shorten.php'
+
+	if [ "$1" = "-c" ]; then
+		copy=1
+		shift
+	fi
+
+	if [ "${1:0:4}" != "http" ]; then
+		echo "Usage: shorten <url>"
+		return 1
+	fi
+
+	url="$(curl -Gs "$trim" -d url="$1" | sed 's/<[^>]*>//g')"
+
+	echo "$url"
+
+	[ $copy -eq 1 ] && $copycmd <<<"$url"
+}

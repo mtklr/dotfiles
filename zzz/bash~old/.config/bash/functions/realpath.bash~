@@ -1,0 +1,29 @@
+# Return absolute path of a file, handles '.', '..', '~' in path argument.
+# From a linux.com forum somewhere
+realpath () {
+	local arg d b f p
+
+	arg="${1:-.}"
+
+	[ -e "$arg" ] || return 1
+
+	if [ -d "$arg" ]; then
+		d="$arg"
+	else
+		# dirname
+		d="${arg%/*}"
+
+		[ "$d" = "$arg" ] && d='.'
+
+		# basename
+		b="${arg##*/}"
+	fi
+
+        p=$(builtin cd "$d" >/dev/null 2>&1 && builtin pwd -P)
+
+	if [ ! -d "$arg" ]; then
+		echo "$p/$b"
+	else
+		echo "$p"
+	fi
+}

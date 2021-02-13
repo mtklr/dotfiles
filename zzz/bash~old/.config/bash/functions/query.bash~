@@ -1,0 +1,17 @@
+# https://vermaden.wordpress.com/2018/09/15/ghost-in-the-shell-part-3/
+
+q () {
+	ls | grep --color=always -i "$1"
+}
+
+Q () {
+	ls | grep --color=always "$1"
+}
+
+qq () {
+	find . | grep --color=always -i "$1"
+}
+
+QQ () {
+	find . | grep --color=always "$1"
+}

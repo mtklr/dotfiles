@@ -1,0 +1,7 @@
+# apropos output that can be copied/pasted to prompt to view man page
+# https://woozle.org/papers/plan9.html
+
+lm () {
+	apropos "$@" | sed 's/\(.*\)(\(.*\)) * - /man \2 \1 # /'
+}
+

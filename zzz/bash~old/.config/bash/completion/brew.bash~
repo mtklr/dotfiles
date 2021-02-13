@@ -1,0 +1,14 @@
+# hugo completion depends on bash shell completion for function
+# _get_comp_words_by_ref and doesn't check if it's there,
+# results in error when trying to use hugo completion
+
+if type brew >/dev/null 2>&1; then
+	HOMEBREW_PREFIX="$(brew --prefix)"
+	if [[ -r "${HOMEBREW_PREFIX}/etc/profile.d/bash_completion.sh" ]]; then
+		source "${HOMEBREW_PREFIX}/etc/profile.d/bash_completion.sh"
+	else
+		for COMPLETION in "${HOMEBREW_PREFIX}/etc/bash_completion.d/"*; do
+			[[ -r "$COMPLETION" ]] && source "$COMPLETION"
+		done
+	fi
+fi

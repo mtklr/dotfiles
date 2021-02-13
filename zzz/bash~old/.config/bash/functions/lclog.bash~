@@ -1,0 +1,26 @@
+# make before/after description for homebrew/livecheck pull requests
+# usage: lclog formula [logfile]
+lclog () {
+	local form lcpath lcrepo logfile
+
+	form="$1"
+	lcrepo="$(brew --repo homebrew/livecheck)"
+	lcpath="$lcrepo/Livecheckables"
+	logfile="${2:-$form-lc.log}"
+
+	[ -n "$1" ] || return 1
+	[ -d "$lcrepo" ] || return 1
+	[ -r "$lcpath/$form.rb" ] || return 1
+
+	ls "$lcpath/$form.rb"
+
+	mv "$lcpath/$form.rb" "$lcpath/$form.rbb" || return 1
+
+	{ echo "before:"; brew livecheck "$form" 2>&1; } | tee -a "$logfile"
+
+	mv "$lcpath/$form.rbb" "$lcpath/$form.rb" || return 1
+
+	{ echo "after:"; brew livecheck "$form" 2>&1; } | tee -a "$logfile"
+
+	[ -r "$lcpath/$form.rb" ] || echo "$lcpath/$form.rb: livecheckable not found" >&2
+}

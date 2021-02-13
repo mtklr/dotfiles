@@ -1,0 +1,24 @@
+# hacky way to see latest b2w episode
+# usage: b2w
+#        b2w [num]
+b2w () {
+	local ep url
+
+	url='http://5by5.tv/b2w/'
+
+	if [ -n "$1" ]; then
+		# require numeric argument
+		[ "${1//[0-9]/}" = "" ] || return 1
+
+		ep=$(curl -s "${url}${1}" | grep -Fi '<title>' | \
+			sed 's/.*#//;s/<\/.*$//')
+	else
+		ep=$(curl -s "${url}" | grep -m1 '\/b2w\/[0-9]\+' | \
+			tidy -b -q -xml 2>/dev/null | \
+			sed '/href/!d;s/.*">#\(.*\)<\/a>/\1/')
+	fi
+
+	echo "$ep"
+	# echo "num ${ep//:*/}"
+	# echo "home ${url}${ep//:*/}"
+}

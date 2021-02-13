@@ -1,0 +1,32 @@
+alias ga='git add'
+alias gb='git branch'
+alias gcm='git commit'
+alias gco='git checkout'
+
+alias gd='git diff -M'
+alias gdc='git diff -M --cached'
+alias gdn='git diff -M --no-index'
+
+# conflicts with github 'gh' binary
+# alias gh='git help'
+alias ghelp='git help'
+
+alias gl='git log'
+alias glg='git log --grep'
+alias glo='git log --oneline'
+alias gls='git log --stat'
+
+alias gr='git reset'
+alias grb='git rebase'
+alias grem='git remote'
+alias grh='git reset HEAD'
+alias grl='git reflog'
+alias gs='git status'
+alias gsl='git stash list'
+alias gst='git stash'
+
+# gitconfig alias aliases :)
+
+alias gid='git id'
+alias glid='git listid'
+alias gsid='git setid'

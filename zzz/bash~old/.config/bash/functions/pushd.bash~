@@ -1,0 +1,9 @@
+# https://unix.stackexchange.com/q/32263
+pushd () {
+	if [ "$1" = "." ]; then
+		builtin cd - || return
+		builtin pushd - || return
+	else
+		builtin pushd "$1" || return
+	fi
+}

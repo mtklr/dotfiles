@@ -1,0 +1,11 @@
+# remove duplicate lines from a file, preserving order
+# usage: dedupe [file ...]
+# https://iridakos.com/how-to/2019/05/16/remove-duplicate-lines-preserving-order-linux.html
+
+dedupe () {
+	if [[ -z "$1" || "$1" = "-" ]]; then
+		awk '!visited[$0]++'
+	else
+		awk '!visited[$0]++' "$@"
+	fi
+}

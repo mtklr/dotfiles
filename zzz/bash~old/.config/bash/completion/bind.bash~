@@ -1,0 +1,20 @@
+# incomplete attempt to complete bind options (handle bindings and options)
+_comp_bind () {
+        local cur prev words line
+
+        COMPREPLY=()
+        cur=${COMP_WORDS[COMP_CWORD]}
+	prev=${COMP_WORDS[$((COMP_CWORD - 1))]}
+
+	if [[ "$prev" =~ set ]]; then
+		words=()
+		while IFS='' read -r line; do
+			words+=("$line")
+		done < <(bind -v | cut -d' ' -f2)
+
+		COMPREPLY=( $(compgen -W'${words[@]}' "$cur") )
+	else
+		COMPREPLY=( $(compgen -A binding -W'set' "$cur") )
+	fi
+}
+complete -F _comp_bind bind

@@ -1,0 +1,98 @@
+# bug user good - (annoying) command prompt reminders
+# prints 'bug' file every $BUG_FREQ (or 10, if unset) command lines.
+# usage: bug
+#        bug [ y | n ]
+#        bug [0-9...]
+#        bug 'string...'
+#
+
+_bug () {
+	local d f paths freq
+
+	# $BUGPATH, like $PATH, is a colon-separated list of directories
+	# to look for $BUGFILE
+	# default: current directory if unset, or paths in $BUGPATH, if set
+	# NOTE: in bash, zero-length $PATH indicates current directory
+	paths="${BUGPATH:-.}"
+
+	# $BUGFILE is the filename to look for in each $BUGPATH
+	# default: .bug
+	f="${BUGFILE:-.bug}"
+
+	# bug prompt frequency
+	# default: 10
+	freq="${BUG_FREQ:-10}"
+
+	if [ "$((BASH_LINENO % freq))" -eq 0 ]; then
+		while read -d: -r d; do
+			[ -r "$d/$f" ] && sed 1d "$d/$f"
+		done <<<"${paths}:"
+	fi
+}
+
+bug () {
+	local f header maxlen freqarg
+
+	f="${BUGFILE:-.bug}"
+
+	header='# bug:'
+	maxlen=280
+
+	if [ -z "$1" ]; then
+		if [[ "$PROMPT_COMMAND" =~ _bug ]]; then
+			echo "is y"
+		else
+			echo "is n"
+			false
+		fi
+		return
+	fi
+
+	if [ -n "$1" ]; then
+		case $1 in
+			y )
+				if [[ -z "$PROMPT_COMMAND" || ! "$PROMPT_COMMAND" =~ _bug ]]; then
+					PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND; }_bug"
+				fi
+				;;
+
+			n ) PROMPT_COMMAND="$(sed 's/;* *_bug;* *//;s/;$//' <<<"$PROMPT_COMMAND")" ;;
+			[[:digit:]]* )
+				if [[ "$1" =~ [[:alpha:]] ]]; then
+					return 1
+				fi
+
+				if [ "$1" -gt 0 ]; then
+					# BUG_FREQ="$(sed 's/^0*//' <<<"$1")"
+
+					# strip 0's without sed or extglob
+					freqarg="$1"
+
+					while [ "${freqarg:0:1}" = "0" ]; do
+						freqarg="${freqarg/#0/}";
+					done
+
+					BUG_FREQ="$freqarg"
+				fi
+
+				echo "bug: frequency is ${BUG_FREQ:-10}"
+				;;
+			* )
+				if [ -r "$f" ]; then
+					if head -n1 "$f" | grep -q "^$header"; then
+						# TODO: add confirm prompt option?
+						# !!! overwrites "$f" if 1st line is "$header"
+						echo "$header" >"$f"
+						echo "${1:0:$((maxlen - 1))}" >>"$f"
+					else
+						echo "bug: $f: Not a bug file, cannot overwrite"
+						false
+					fi
+				else
+					echo "$header" >"$f"
+					echo "${1:0:$((maxlen - 1))}" >>"$f"
+				fi
+				;;
+		esac
+	fi
+}

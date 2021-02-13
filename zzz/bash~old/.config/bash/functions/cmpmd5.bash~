@@ -1,0 +1,26 @@
+# usage: cmpmd5 [file | sum] [file | sum]
+cmpmd5 () {
+	local suma sumb
+
+	if [ -f "$1" ]; then
+		suma="$(md5 -q "$1")"
+		sumb="${2:0:32}"
+	elif [ -f "$2" ]; then
+		suma="${1:0:32}"
+		sumb="$(md5 -q "$2")"
+	else
+		suma="${1:0:32}"
+		sumb="${2:0:32}"
+	fi
+
+	echo "$suma"
+	echo "$sumb"
+
+	if [ "$suma" = "$sumb" ]; then
+		echo "OK"
+		return 0
+	else
+		echo "NO MATCH"
+		return 1
+	fi
+}

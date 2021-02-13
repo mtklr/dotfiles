@@ -1,0 +1,45 @@
+# a messy, unfinished, unoptimized attempt at more complete job completion
+# see man bash: "auto_resume" and "JOB CONTROL"
+# TODO: replace with as many builtins as possible
+_comp_jobs () {
+	local cur cmdlines commands jobnums words IFS OLDIFS
+
+	COMPREPLY=()
+	cur=${COMP_WORDS[COMP_CWORD]}
+
+	# tab separate, but keep space after ( or {
+	cmdlines=$(jobs | tr -s ' ' | cut -d' ' -f 3- | sed 's/ /	/g;s/\([({]\)	/\1 /')
+	commands=$(cut -f1 <<<"$cmdlines" | sort -u)
+	jobnums=$(jobs | cut -d' ' -f 1 | sed 's/[][]//g;s/[-+]/	&/' | tr '\n' '\t')
+
+	words="$commands	$jobnums"
+
+	# match starting with %, "%
+	# maybe better to just complete the % (same as +) by itself -
+	# putting % before jobspecs is only required at the start of a command line
+	if [[ "${cur:0:1}" = "%" || "${cur:0:2}" = "\"%" ]]; then
+		if [[ "${cur:1:1}" = "?" || "${cur:2:1}" = "?" ]]; then
+			# prepend with %?, filter out duplicates for substring match
+			words=$(tr '\t' '\n' <<<"$cmdlines" | sed '/^[)}|<>]$/d;s/^/%?/' | sort -u | tr '\n' '\t')
+		else
+			# prepend with %, add % by itself as possible completion
+			words=$(tr '\t' '\n' <<<"$commands	$jobnums	%" | sed 's/^/%/' | sort -u | tr '\n' '\t')
+		fi
+	elif [[ "${cur:0:1}" = "?" || "${cur:0:2}" = "\"?" ]]; then
+		# prepend with ?, filter out duplicates for substring match
+		words=$(tr '\t' '\n' <<<"$cmdlines" | sed '/^[)}|<>]$/d;s/^/?/' | sort -u | tr '\n' '\t')
+	fi
+
+	OLDIFS=$IFS
+	IFS=$'\t\n'
+
+	COMPREPLY=( $(compgen -P '"' -S '"' -W'$words' "$cur") )
+
+	IFS=$OLDIFS
+}
+# -o nosort keeps job number with its name
+# NOTE: macos bash (3.x) doesn't have "-o nosort"
+# complete -o nosort -F _comp_jobs bg disown fg jobs
+
+# %1, %job, %?subtring is the same as fg %1... %1 & is the same as bg %1. see man bash: JOB CONTROL
+complete -F _comp_jobs j %

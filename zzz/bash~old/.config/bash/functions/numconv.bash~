@@ -1,0 +1,40 @@
+# binary, decimal, hexidecimal, octal conversion
+# prefix with 0x for hex, leading zero for octal
+# (remember 08, 09, 018, 019, etc. are invalid for octal)
+# for character to number, use like so: dec "'C"
+# usage: bin num
+#        dec num
+#        hex num
+#        oct num
+
+bin () {
+	local n
+
+	for n; do
+		bc -l <<<"obase=2; $(dec "$n")"
+	done
+}
+
+dec () {
+	local n
+
+	for n; do
+		printf '%i\n' "$n"
+	done
+}
+
+hex () {
+	local n
+
+	for n; do
+		printf '%.2x\n' "$n"
+	done
+}
+
+oct () {
+	local n
+
+	for n; do
+		printf '%o\n' "$n"
+	done
+}

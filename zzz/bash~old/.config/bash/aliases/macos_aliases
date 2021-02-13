@@ -1,0 +1,4 @@
+# clear terminal window title (after ssh, for example)
+alias ct="echo -e '\033]1;\0\007\033]2;\0\007'"
+
+alias tu='du -sh ~/.Trash'

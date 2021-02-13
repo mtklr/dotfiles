@@ -1,0 +1,283 @@
+# set bell-style none
+set mark-symlinked-directories on
+set show-all-if-ambiguous on
+set show-all-if-unmodified on
+set visible-stats on
+
+# set editing-mode vi
+
+$if mode=vi
+	set keymap vi-insert
+	# "kj": vi-movement-mode # remap escape
+$endif
+
+$if mode=emacs
+
+#### cursor key combinations
+
+# left, right, up, down (readline defaults)
+# "\e[D": backward-char
+# "\e[C": forward-char
+# "\e[A": prev-history
+# "\e[B": next-history
+
+# shift left, right, up, down
+# (up/down not in Terminal.app 'Keyboard')
+"\e[1;2D": vi-prev-word
+"\e[1;2C": vi-next-word
+# "\e[1;2A": history-search-backward
+# "\e[1;2B": history-search-forward
+
+# control left, right, up, down (mission control defaults)
+# (up/down not in Terminal.app 'Keyboard')
+# "\e[1;5D": ""
+# "\e[1;5C": ""
+# "\e[1;5A": ""
+# "\e[1;5B": ""
+
+# shift control left, right, up, down
+# (not in Terminal.app 'Keyboard')
+# (in Alacritty.app as option-direction)
+# "\e[1;3D": ""
+# "\e[1;3C": ""
+# "\e[1;3A": ""
+# "\e[1;3B": ""
+
+# option shift left, right, up, down
+# (not in Terminal.app 'Keyboard')
+# (in Alacritty.app as option-shift-direction)
+# "\e[1;4D": ""
+# "\e[1;4C": ""
+# "\e[1;4A": ""
+# "\e[1;4B": ""
+
+# esc/meta left, right, up, down
+# "\e\e[D": vi-prev-word
+# "\e\e[C": vi-next-word
+# "\e\e[A": history-search-backward
+# "\e\e[B": history-search-forward
+
+#### page up/down, home/end, insert, delete
+
+# insert, home, end, page up, page down
+# (insert not in Terminal.app 'Keyboard')
+# "\e[2~": overwrite-mode
+# "\e[H": beginning-of-line
+# "\e[F": end-of-line
+"\e[5~": history-search-backward
+"\e[6~": history-search-forward
+
+# delete
+# "\e[3~": delete-char # readline default
+# "\e[3~": delete-char-or-list
+# "\e[3~": forward-backward-delete-char
+
+# shift delete, control delete, control option delete
+# "\e[3;2~": ""
+# "\e[3;5~": ""
+# "\e\e[3;5~": ""
+
+#### function keys
+
+# F1-F12
+# "\eOP": ""
+# "\eOQ": ""
+# "\eOR": ""
+# "\eOS": ""
+# "\e[15~": ""
+# "\e[17~": ""
+# "\e[18~": ""
+# "\e[19~": ""
+# "\e[20~": ""
+# "\e[21~": ""
+# "\e[23~": "" # F11, mission control "show desktop" default
+# "\e[24~": "" # F12, mission control "show dashboard" default
+
+# F13-F20
+# "\e[25~": ""
+# "\e[26~": ""
+# "\e[28~": ""
+# "\e[29~": ""
+# "\e[31~": ""
+# "\e[32~": ""
+# "\e[33~": ""
+# "\e[34~": ""
+
+# shift F5-F12
+# "\e[25~": ""
+# "\e[26~": ""
+# "\e[28~": ""
+# "\e[29~": ""
+# "\e[31~": ""
+# "\e[32~": ""
+# "\e[33~": ""
+# "\e[34~": ""
+
+# option F1-F15
+# "\e[17~": ""
+# "\e[18~": ""
+# "\e[19~": ""
+# "\e[20~": ""
+# "\e[21~": ""
+# "\e[23~": ""
+# "\e[24~": ""
+# "\e[25~": ""
+# "\e[26~": ""
+# "\e[28~": ""
+# "\e[29~": ""
+# "\e[31~": ""
+# "\e[32~": ""
+# "\e[33~": ""
+# "\e[34~": ""
+
+#### misc
+
+# ignore empty esc/meta completion,
+# see bash `shopt -s no_empty_cmd_completion`
+# "\e\e": ""
+
+# bind -p shows "\C- " as "\C-@"?
+# Control remapped to CapsLock only triggers '\C-@' with right-shift,
+# it works as Control in other combinations though.
+# "\C- ": magic-space
+"\e ": magic-space
+# shell-expand-line default is "\e\C-e"
+"\e\C-m": shell-expand-line
+
+# shift-tab
+# "\e[Z": menu-complete
+
+# calculate at prompt, e.g.: '$ 17+25\e='
+# default is "possible-completions", which is also "\e?"
+"\e=": "\C-abc -l <<<'\C-e'\C-m"
+
+# "\eB": copy-backward-word
+# "\eF": copy-forward-word
+"\ec": copy-region-as-kill
+
+# Copy the entire line.
+"\eC": "\C-a\C-k\C-y"
+
+# Switch to last job.
+"\ej": "\C-a\C-kfg -\C-m"
+
+"\ek": kill-region
+"\eK": kill-whole-line
+
+# Complement non-incremental search.
+"\eN": non-incremental-forward-search-history-again
+"\eP": non-incremental-reverse-search-history-again
+
+# git status
+"\es": "git status\C-m"
+
+"\ew": unix-filename-rubout
+
+# exit status of last command
+"\ex": "echo $?\C-m"
+
+# Yank last argument of the current line.
+"\eY": "!#:$\e^"
+
+# zap (erase) clipboard
+"\ez": "echo '' | pbcopy"
+
+"\C-t": tty-status
+
+# The previous line, up to last argument.
+"\C-x\C-m": "!:-\e^ "
+
+# Edit an alias. More complex aliases may not expand properly.
+# Type alias on line by itself, then:
+"\C-xa": "\C-e\e\\\C-u\C-y\e\C-e'\C-aalias \C-y='"
+
+# Basename (tail), dirname (head) of last argument of the current line.
+"\C-xb": "!#:$:t\e^"
+"\C-xd": "!#:$:h\e^"
+
+# Basename (tail), dirname (head) of last argument of the previous line.
+"\C-xB": "!$:t\e^"
+"\C-xD": "!$:h\e^"
+
+# cd to last argument of the current line.
+"\C-xc": "\C-a\C-e\e\\ !#:$:h\e\C-]!\C-b\e^\C-ucd\C-m"
+
+# Open last argument of the current line in $EDITOR.
+# default is "call-last-kbd-macro"
+"\C-xe": "\C-a\C-e\e\\ !#:$\e\C-]!\C-b\e^\C-u${EDITOR:-/usr/bin/vi}\e\C-e\C-m"
+
+# ls -l last argument of the current line.
+"\C-xl": "\C-a\C-e\e\\ !#:$\e\C-]!\C-b\e^\C-uls -l\C-m"
+
+# View last argument of the current line with man.
+"\C-xm": "\C-a\C-e\e\\ !#:$\e\C-]!\C-b\e^\C-uman\C-m"
+
+# find
+"\C-xf": "\C-a\C-e\e\\ !#:$\e\C-]!\C-b\e^\C-ufind . -iname \'*\C-d\C-e*\'\C-m"
+
+# mdfind search for last arg file in cwd. Faster than 'find . -name ...'.
+"\C-xn": "\C-a\C-e\e\\ !#:$\e\C-]!\C-b\e^\C-umdfind -onlyin . -name \'\C-d\C-e\'\C-m"
+# mdfind search for last arg file anywhere.
+"\C-xN": "\C-a\C-e\e\\ !#:$\e\C-]!\C-b\e^\C-umdfind -name \'\C-d\C-e\'\C-m"
+
+# mdfind search for last arg metadata in cwd.
+"\C-xs": "\C-a\C-e\e\\ !#:$\e\C-]!\C-b\e^\C-umdfind -onlyin . \'\C-d\C-e\'\C-m"
+# mdfind search for last arg metadata anywhere.
+"\C-xS": "\C-a\C-e\e\\ !#:$\e\C-]!\C-b\e^\C-umdfind \'\C-d\C-e\'\C-m"
+
+# Open current directory in Finder.
+"\C-xo": "open .\C-m"
+
+# Edit the path.
+# "\C-xp": "PATH=${PATH}\e\C-e\C-a\ef\C-f"
+
+# View last argument of the current line with $PAGER.
+"\C-xp": "\C-a\C-e\e\\ !#:$\e\C-]!\C-b\e^\C-u${PAGER:-/usr/bin/less}\e\C-e\C-m"
+
+# Edit a shell variable. Type $variable on a line by itself, then:
+# Single-quoted:
+"\C-xq": "\C-e\e\\\C-u\C-y\e\C-e\'\C-a\C-y=\C-a\C-d\C-]=\C-f\'"
+
+# Double-quoted:
+"\C-xQ": "\C-e\e\\\C-u\C-y\e\C-e\"\C-a\C-y=\C-a\C-d\C-]=\C-f\""
+# No quotes:
+"\C-xv": "\C-e\e\\\C-u\C-y\e\C-e\C-a\C-y=\C-a\C-d\C-]=\C-f"
+
+# default is "\C-xe"
+"\C-xx": call-last-kbd-macro
+
+# readline stuff
+"\C-xF": dump-functions
+"\C-xM": dump-macros
+"\C-xV": dump-variables
+
+#### tw script window stuff
+
+# edges
+# "\C-xwh": "tw l\C-m"
+# "\C-xwl": "tw r\C-m"
+# "\C-xwk": "tw t\C-m"
+# "\C-xwj": "tw b\C-m"
+
+# center edges
+# "\C-xwH": "tw lc\C-m"
+# "\C-xwL": "tw rc\C-m"
+# "\C-xwK": "tw tc\C-m"
+# "\C-xwJ": "tw bc\C-m"
+
+# corners
+# "\C-xwy": "tw tl\C-m"
+# "\C-xwu": "tw tr\C-m"
+# "\C-xwb": "tw bl\C-m"
+# "\C-xwn": "tw br\C-m"
+
+# centering
+# "\C-xw\C-m": "tw c\C-m"
+# "\C-xw ": "tw ch\C-m"
+# "\C-xwv": "tw cv\C-m"
+
+# tile prev/next
+# "\C-xw[": "tw pr\C-m"
+# "\C-xw]": "tw nr\C-m"
+
+$endif

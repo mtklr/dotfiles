@@ -1,0 +1,143 @@
+# Git aliases grouped by git-scm reference.
+# http://git-scm.com/docs
+
+## setup and config
+alias gcf='git config'
+# alias gcfg='git config --global'
+alias gh='git help'
+# alias gnp='git --no-pager'
+
+## getting and creating projects
+# init
+# clone
+
+## basic snapshotting
+alias ga='git add'
+# alias gau='git add --update'
+alias gs='git status'
+alias gs.='git status .'
+alias gsi='git status --ignored'
+# alias gsn='git status --untracked-files=no'
+alias gss='git status --short'
+alias gd='git diff'
+# --cached = --staged
+alias gdc='git diff --cached'
+# alias gdi='git diff-index'
+# alias gdic='git diff-index --cached'
+alias gdn='git diff --no-index'
+alias gds='git diff --stat'
+# alias gdt='git diff-tree'
+alias gcm='git commit'
+alias gcma='git commit --amend'
+alias gcmf='git commit --fixup'
+alias gr='git reset'
+alias grh='git reset HEAD --'
+# rm
+# mv
+
+## branching and merging
+alias gb='git branch'
+alias gco='git checkout'
+# alias gm='git merge'
+# mergetool
+
+alias gl='git log'
+# 'git log --grep pattern [--more options]' works here.
+alias glg='git log --grep'
+alias glo='git log --oneline'
+# alias glog='git log --oneline --grep'
+alias glos='git log --oneline --stat'
+# alias glogs='git log --oneline --stat --grep'
+# alias glosg='git log --oneline --stat --grep'
+alias gls='git log --stat'
+# alias glgs='git log --stat --grep'
+# alias glsg='git log --stat --grep'
+# alias glp='git log -p'
+# alias glp="git log --abbrev-commit --date=format:'%a %x' --graph --pretty=format:'%x1b[93m%h  %C(green)%an  %C(cyan)%>(12)%cd %C(red)%d %C(reset)%s  %C(dim white)%cr'"
+# graph in reverse order:
+# alias glrev='gl --graph --oneline --color=always | tail -r | sed "s:\\\([[m\|]\):\1:g;s:\/\([[m\|]\)[^[:alnum:]]:\1:g" | sed "s::\\:g;s::\/:g;" | less'
+
+alias gsb='git show-branch'
+alias gst='git stash'
+alias gstl='git stash list'
+alias gsts='git stash show'
+alias gt='git tag'
+alias gtl='git tag --list'
+
+## sharing and updating projects
+# alias gf='git fetch'
+# alias gfd='git fetch --dry-run'
+# alias gpl='git pull'
+# alias gpu='git push'
+# alias gpud='git push --dry-run'
+alias grem='git remote'
+# alias gsm='git submodule'
+
+## inspection and comparison
+# alias gsh='git show'
+# log (see above)
+# diff (see above)
+# alias gsl='git shortlog'
+# alias gds='git describe'
+
+## patching
+# alias gap='git apply'
+# alias gcp='git cherry-pick'
+# diff (see above)
+alias grb='git rebase'
+# alias grv='git revert'
+
+## debugging
+# alias gbi='git bisect'
+# alias gbl='git blame'
+# alias gg='git grep --break --heading --line-number'
+
+## email
+# am
+# apply (see above)
+# format-patch
+# send-email
+# request-pull
+
+## external systems
+# svn
+# fast-import
+
+## administration
+# alias gcl='git clean'
+# alias ggc='git gc'
+# fsck
+# alias gpr='git prune'
+alias grl='git reflog'
+alias gfb='git filter-branch'
+alias giw='git instaweb'
+# alias gar='git archive'
+
+## server admin
+# daemon
+# update-server-info
+
+## plumbing commands
+# cat-file
+# commit-tree
+# count-objects
+# diff-index
+# for-each-ref
+# hash-object
+# alias gls='git ls-files'
+# merge-base
+# read-tree
+# rev-list
+# alias grp='git rev-parse'
+# alias gsr='git show-ref'
+# symbolic-ref
+# alias gui='git update-index'
+# alias guiau='git update-index --assume-unchanged'
+# alias guinoau='git update-index --no-assume-unchanged'
+# update-ref
+# verify-pack
+# write-tree
+
+# list remote tags
+# (better to just `git pull && git tag`, checkout tag as needed)
+# alias gitremotetags='git ls-remote -t | sed "s:.*refs/tags/::"'

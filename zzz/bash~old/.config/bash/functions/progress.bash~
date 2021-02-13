@@ -1,0 +1,54 @@
+# Background process indicators
+# usage: cmd & progress_name [before] [after]
+# "before" is an optional string to print before the dots.
+# "after" is an optional string to print after the last dot.
+# https://stackoverflow.com/q/238073
+
+progress_dots () {
+	local pid
+
+	pid=$!
+
+	printf '%b' "${1-}"
+
+	while kill -0 $pid 2>/dev/null; do
+		printf '.'
+		sleep .1
+	done
+
+	printf '%b\n' "${2-}"
+}
+
+progress_pulse () {
+	local pid colors c
+
+	colors=( 234 238 242 246 250 250 246 242 238 234 )
+
+	pid=$!
+
+	while kill -0 $pid 2>/dev/null; do
+		for c in "${colors[@]}"; do
+			printf '\r%b\e[0;38;5;%im•' "${1-}" "$c"
+			sleep .1
+		done
+	done
+
+	# ' \b' removes last spin character
+	printf "\r%b \b%b\n" "${1-}" "${2-}"
+}
+
+progress_spin () {
+	local pid s
+
+	pid=$!
+
+	while kill -0 $pid 2>/dev/null; do
+		for s in / - \\ \|; do
+			printf '\r%b%c' "${1-}" "$s"
+			sleep .1
+		done
+	done
+
+	# ' \b' removes last spin character
+	printf "\r%b \b%b\n" "${1-}" "${2-}"
+}

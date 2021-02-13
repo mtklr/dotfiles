@@ -1,0 +1,17 @@
+# Basic pkgutil command completion.
+_comp_pkgutil () {
+	local cur f prev words
+
+	COMPREPLY=()
+	cur=${COMP_WORDS[COMP_CWORD]}
+	prev=${COMP_WORDS[$((COMP_CWORD - 1))]}
+
+	words=$(pkgutil --pkgs)
+
+	if [ "$prev" = "--" ]; then
+		COMPREPLY=( $(compgen -o bashdefault) )
+	else
+		COMPREPLY=( $(compgen -o bashdefault -W'$words' "${cur//--/}") )
+	fi
+}
+complete -o default -F _comp_pkgutil pkgutil

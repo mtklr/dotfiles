@@ -1,0 +1,22 @@
+# brace style
+--style=1tbs
+
+# tabs
+--indent=tab
+
+# indentation
+--indent-switches
+
+# padding
+--break-blocks
+--pad-oper
+--pad-header
+--unpad-paren
+--delete-empty-lines
+--align-pointer=name
+--align-reference=name
+
+# formatting
+--attach-return-type
+--max-code-length=78
+--break-after-logical

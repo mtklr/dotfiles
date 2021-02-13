@@ -1,0 +1,35 @@
+# list safari downloads
+alias downloads="sqlite3 ~/Library/Preferences/com.apple.LaunchServices.QuarantineEventsV* 'select LSQuarantineDataURLString from LSQuarantineEvent' | sed '/^$/d'"
+
+# recognize Finder aliases with `file`
+# alias file='file -m<(echo -e "0\tstring\tbook\tmacOS Finder alias\n8\tstring\tmark\tmacOS Finder alias")'
+
+# howard fortune
+alias howsay='p=~/src/howard; fortune "$p" | cowsay -f "$p"/howard.cow'
+alias howsayv='p=~/src/howard; h="$(fortune "$p")"; cowsay -f "$p"/howard.cow "$h" && say -v Daniel "$h"'
+
+# listening processes
+alias listening='lsof -P -i -n +c 0 +M'
+
+# writing processes (any process opening a file for writing)
+# https://apple.stackexchange.com/q/96688
+# requires disabling System Integrity Protection for dtrace:
+# csrutil enable --without dtrace
+# https://unix.stackexchange.com/a/276219
+# alias writing="sudo dtrace -qn 'syscall::open*:entry /arg1&3/ { printf(\"%d %s %s\n\", pid, execname, copyinstr(arg0)); }'"
+
+alias lev='/usr/share/vim/vim80/macros/less.sh'
+
+alias makemame='make REGENIE=1 PTR64=1 ARCHOPTS=-march=native'
+
+# usually faster than 'find'
+alias mf='mdfind -name -onlyin .'
+
+# non-apple prefs, kexts, launchctl items
+alias nap='grep -v apple <(find ~/Library/Preferences -type f -exec basename {} +;)'
+alias nak='kextstat | grep -iv apple'
+alias nal='launchctl list | grep -iv apple'
+
+alias tu='du -sh ~/.Trash'
+
+alias wincap='screencapture -amowW "$HOME/Desktop/Screen Shot $(date).png"'

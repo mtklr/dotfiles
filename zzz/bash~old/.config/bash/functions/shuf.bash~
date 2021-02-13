@@ -1,0 +1,7 @@
+# shuffle lines
+# https://stackoverflow.com/a/30133294
+shuf () {
+	awk 'BEGIN {srand(); OFMT="%.17f"} {print rand(), $0}' "$@" | \
+	sort -k 1,1n | \
+	cut -d ' ' -f 2-
+}

@@ -1,0 +1,35 @@
+[alias]
+	home = !open `git config remote.origin.url`
+
+	id = !git config --get user.name && git config --get user.email
+	lsid = "!f() { grep -A2 -- '^\\[user ' ~/.config/git/config | \
+		sed 's/^[[:space:]]*//'; }; f"
+	setid = "!f() { [ -n "$1" ] || return 1; \
+		git config user.name \"$(git config user.$1.name)\" && \
+		git config user.email \"$(git config user.$1.email)\"; }; f"
+	; as above, with a signing key
+	; setid = "!f() { [ -n "$1" ] || return 1; \
+	; 	git config user.name \"$(git config user.$1.name)\"; \
+	; 	git config user.email \"$(git config user.$1.email)\"; \
+	; 	git config user.signingkey \"$(git config user.$1.signingkey)\" && \
+	; 	git config user.signingkey \"$(git config user.$1.signingkey)\"; }; f"
+
+	tracked = ls-tree -r --name-only HEAD
+
+	update-completion = !mkdir -p ~/.config/git && curl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash >~/.config/git/git-completion.bash
+	update-ignore = !mkdir -p ~/.config/git && curl https://raw.githubusercontent.com/github/gitignore/master/{C,Global/Vim,Global/macOS}.gitignore >~/.config/git/ignore
+	update-prompt = !mkdir -p ~/.config/git && curl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh >~/.config/git/git-prompt.sh
+[init]
+	defaultBranch = main
+[user]
+	; https://www.micah.soy/posts/setting-up-git-identities/
+	useConfigOnly = true
+	; global default
+	name = "Name"
+	email = "name@localhost"
+[user "github"]
+	name = "Name"
+	email = "name@users.noreply.github.com"
+[user "gitlab"]
+	name = "Name"
+	email = "name@users.noreply.gitlab.com"

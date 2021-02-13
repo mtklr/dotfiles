@@ -1,0 +1,27 @@
+# Resize terminal window.
+# -x maximizes, -r returns from maximized size
+# usage: winsize [-x |-r]
+#        winsize columns rows
+
+function winsize () {
+	# $1 is '-r' or '-x'
+	# return from maximized
+	if [ "$1" = "-r" ]; then
+		printf "\e[9;0t"
+	# maximize
+	elif [ "$1" = "-x" ]; then
+		printf "\e[9;1t"
+	fi
+
+	# resize to $1 $2
+	# require 2 arguments
+	[ $# != 2 ] && return 1
+
+	# require numeric arguments
+	if [[ "${1//[0-9]}" != "" || "${2//[0-9]}" != "" ]]; then
+		return 1
+	fi
+
+	# resize
+	printf "\e[8;%i;%it" "$2" "$1"
+}
