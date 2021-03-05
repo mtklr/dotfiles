@@ -33,7 +33,7 @@
 # kill - '-sigspec' turns in to '-s, -i, -g' etc. only options are: -s, -n -l (plus -PID or -JOB)
 # popd - needs '+', says '-N' but 'N' stands for a number, not an option '-N'.
 # pushd - needs '+', remove tabs after options
-# set - lists options as '[--abefhkmnptuvxBCHP]', function doesn't break this into seperate options because of '--'
+# set - lists options as '[--abefhkmnptuvxBCHP]', function doesn't break this into separate options because of '--'
 # test - doesn't list options in one line (can't use 'head -n1'), lists '-.' as option, has some two letter options...
 
 _comp_usage () {

@@ -1,5 +1,5 @@
 # is command a group command?
-# yes, save seperately from regular commands
+# yes, save separately from regular commands
 # filter out { }
 # complete on actual command
 # add prefix \{ upon completion
