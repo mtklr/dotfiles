@@ -15,6 +15,9 @@
 unlet! skip_defaults_vim
 source $VIMRUNTIME/defaults.vim
 
+" don't remember last cursor position
+augroup vimStartup | au! | augroup END
+
 " disable vim-polyglot automatic settings
 let g:polyglot_disabled = ['autoindent', 'sensible']
 
