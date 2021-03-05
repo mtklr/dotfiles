@@ -16,7 +16,7 @@ _comp_git () {
 		|| "${COMP_WORDS[0]}" = "gco" \
 		|| "${COMP_WORDS[0]}" = "gd" ]]; then
 		# Only get branch names if inside git repo.
-		if git rev-parse --git-dir >/dev/null 2>&1; then
+		if git rev-parse --git-dir &>/dev/null; then
 			words=$(git branch -a --color=never --format '%(refname:short)')
 		fi
 	# Complete git commands on first arg or 'help'

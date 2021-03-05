@@ -32,7 +32,7 @@ mark_add () {
 	fi
 
 	# Make dir an absolute path (handles '.', '..', '~' in $1).
-        d=$(builtin cd "$d" >/dev/null 2>&1 && builtin pwd -P)
+        d=$(builtin cd "$d" &>/dev/null && builtin pwd -P)
 
 	# Make mark the basename of d when no $2 arg is given.
 	m="${d##*/}"
@@ -44,7 +44,7 @@ mark_add () {
 		m="$2"
 
 		# If $2 is a dir, make it an absolute path.
-		[ -d "$2" ] && m=$(builtin cd "$d" >/dev/null 2>&1 && builtin pwd -P)
+		[ -d "$2" ] && m=$(builtin cd "$d" &>/dev/null && builtin pwd -P)
 
 		# Make mark the basename of m.
 		m="${m##*/}"

@@ -8,7 +8,7 @@ git_branch () {
 	local branch
 
 	# not in a git project, return
-	if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+	if ! git rev-parse --is-inside-work-tree &>/dev/null; then
 		unset GIT_PS_BRANCH
 		return
 	fi
@@ -44,7 +44,7 @@ git_status () {
 
 	# * if using without git_branch () in $PROMPT_COMMAND
 	# not in a git project, return
-	# if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+	# if ! git rev-parse --is-inside-work-tree &>/dev/null; then
 	# 	unset GIT_PS_STATUS
 	# 	return 1
 	# fi

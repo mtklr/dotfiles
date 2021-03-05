@@ -7,7 +7,7 @@ in_git ()
 
 	d="${1:-$PWD}"
 
-	if git -C "$d" rev-parse --show-top-level >/dev/null 2>&1; then
+	if git -C "$d" rev-parse --show-top-level &>/dev/null; then
 		return 0
 	fi
 

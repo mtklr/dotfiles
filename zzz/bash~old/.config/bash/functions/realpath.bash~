@@ -19,7 +19,7 @@ realpath () {
 		b="${arg##*/}"
 	fi
 
-        p=$(builtin cd "$d" >/dev/null 2>&1 && builtin pwd -P)
+        p=$(builtin cd "$d" &>/dev/null && builtin pwd -P)
 
 	if [ ! -d "$arg" ]; then
 		echo "$p/$b"
