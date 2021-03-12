@@ -15,17 +15,6 @@ alias l='ls'
 alias m='make'
 alias mn='make -n'
 
-# clear Terminal.app window title (after ssh)
-alias wk="printf '\e]1;\0\a\e]2;\0\a'"
-
-# resize terminal
-alias wl='printf "\e[8;48;132t"'	# large
-alias wn='printf "\e[8;24;80t"'		# normal
-alias wt='printf "\e[8;48;80t"'		# tall
-alias ww='printf "\e[8;24;132t"'	# wide
-# alias wx='printf "\e[9;1t"'		# maximize
-# alias wr='printf "\e[9;0t"'		# restore to previous size
-
 # git
 alias ga='git add'
 alias gb='git branch'
@@ -35,6 +24,18 @@ alias gd='git diff'
 alias gh='git help'
 alias gl='git log'
 alias gr='git reset'
+alias grb-'git rebase'
 alias grm='git remove'
 alias gs='git status'
 alias gst='git stash'
+
+# resize terminal
+
+alias wk="printf '\e]1;\0\a\e]2;\0\a'"	# clear Terminal.app title (after ssh)
+alias wl='printf "\e[8;48;132t"'	# large
+alias wn='printf "\e[8;24;80t"'		# normal
+alias wt='printf "\e[8;48;80t"'		# tall
+alias ww='printf "\e[8;24;132t"'	# wide
+# alias wx='printf "\e[9;1t"'		# maximize
+# alias wr='printf "\e[9;0t"'		# restore to previous size
+
