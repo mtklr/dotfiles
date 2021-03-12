@@ -1,4 +1,4 @@
-[ -r ~/.bash_sessions_disable ] || touch ~/.bash_sessions_disable
+[ -f ~/.bash_sessions_disable ] || touch ~/.bash_sessions_disable
 
 shopt -s no_empty_cmd_completion
 
