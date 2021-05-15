@@ -12,4 +12,4 @@ export PS1='\j \[\e[34m\]\w \[\e[33m\]\$\[\e[0m\] '
 
 complete -cf man sudo
 
-[ -f ~/.bash_aliases ] && . ~/.bash_aliases
+. ~/.bash_aliases
