@@ -15,9 +15,6 @@
 unlet! skip_defaults_vim
 source $VIMRUNTIME/defaults.vim
 
-" don't remember last cursor position
-augroup vimStartup | au! | augroup END
-
 " disable vim-polyglot automatic settings
 let g:polyglot_disabled = ['autoindent', 'sensible']
 
@@ -36,6 +33,9 @@ endif
 
 let g:lightline = {'colorscheme': 'selenized_dark'}
 colorscheme selenized
+
+" don't remember last cursor position
+augroup vimStartup | au! | augroup END
 
 " make
 augroup MakeProgs
@@ -63,6 +63,7 @@ augroup END
 " options
 set hidden
 set ignorecase
+set noincsearch
 set laststatus=2
 set listchars+=tab:>_
 set mouse&
