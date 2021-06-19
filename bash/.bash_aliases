@@ -15,6 +15,7 @@ alias ls='ls -FG'
 alias l='ls'
 alias m='make'
 alias mn='make -n'
+alias tu='du -sh ~/.Trash'
 
 # git
 alias ga='git add'
